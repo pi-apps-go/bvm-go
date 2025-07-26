@@ -1,0 +1,105 @@
+# bvm configuration file
+# BVM reads the file on each run in order to pick up your settings in an easier format.
+
+# Do not change this file if it is in the bvm/resources folder.
+# Make changes to the copy of the file in your VM directory that is created after running bvm new-vm.
+
+[config]
+# Windows username and password to set during the firstboot mode.
+[config.user]
+vm_username = "Win11ARM"
+vm_password = "win11arm"
+
+# Select Windows language to download. List all languages with: bvm list-languages
+[config.download]
+download_language = "English (United States)"
+# Be aware that other registry changes (like dark mode, disabling hibernation, and RDP) will still be run on the VM.
+# Inspect the firstlogin.ps1 and autounattend.xml files for more details.
+
+# Change this to false if you don't want Microsoft bloatware, ads, and Windows Defender removed during firstboot.
+# Note to self for ARMv7 builds of Windows 10, this is not supported as Powershell is always running in Constrained Language Mode, which is not supported by the debloat script and thus blocks the script from running due to using such functions.
+[config.debloat]
+debloat = true
+
+# Choose the initial size of the disk image. This can go as low as 20 if you encounter the "Insufficient free disk space" error.
+# The drive can be expanded later, but not from this config option.
+[config.disksize]
+disksize = 40
+
+# Attention!!!
+# The above options need to be set before running the download step.
+# The remaining options can be changed at any time.
+
+# If you have mutliple VMs, give each one a unique value.
+[config.rdp_port]
+rdp_port = 3389
+
+# Force RAM allocation for QEMU. (in gigabytes) It's recommended to leave this commented for BVM to choose a sensible value.
+[config.vm_mem]
+vm_mem = 4
+
+# If your device has 4GB or less RAM, it is strongly recommended you set up ZRAM.
+# An excellent ZRAM implementation can be found on Pi-Apps called 'More RAM'
+# You can install it directly with: wget -qO- https://raw.githubusercontent.com/Botspot/pi-apps/master/apps/More%20RAM/install | bash
+
+# Leave this much free RAM for Linux at all times. Default is 100 (MB)
+# Every second, the VM will adjust its RAM allocation to make sure this much is freely available for Linux.
+# If linux tasks begin to use more, the VM will compensate and use less.
+[config.free_ram_goal]
+free_ram_goal = 100
+
+# USB forwarding: uncomment this line for the VM to have direct access to a USB device.
+# Replace 05dc:a720 with the value you see, for the device you want, from the output of lsusb
+# For multiple devices, keep it in those quotes, but separate each one with a space character.
+[config.usb_passthrough]
+usb_passthrough = "05dc:a720"
+
+# Uncomment this to turn off animations and transparency in the connect mode
+[config.reduce_graphics]
+reduce_graphics = true
+
+# Uncomment to view the VM in fullscreen. Uncommenting this overrides the fullscreen setting in GUI.
+[config.fullscreen]
+fullscreen = true
+
+# Uncomment to enable additional output to help troubleshoot issues.
+[config.bvm_debug]
+bvm_debug = true
+
+# Even more debugging: (displays every command run by the script)
+[config.debug]
+debug = true
+
+# Uncomment to disable BVM updates. Useful if you have changed the script and do not want your changes overwritten
+[config.disable_updates]
+disable_updates = true
+# Most users should not have to be modifying the bvm script. It is preferable to keep all changes in this config file.
+# If your situation needs more flexibility than what the config file offers, contact the pi-apps-go developers and we can try to implement something that helps everyone.
+
+# Pass additional flags to the FreeRDP viewer
+[config.add_freerdp_flags]
+add_freerdp_flags = "(-drives -home-drive -wallpaper)"
+# See all options by running wlfreerdp -help or xfreerdp -help
+
+# Network settings: leave this alone unless you know what you are doing and need to change it.
+# For security, the VM's RDP port is only accessible on localhost, not on the LAN. To change that, replace 127.0.0.1 with 0.0.0.0
+# Do not change 3389 here with your value of rdp_port set above. This 3389 is the port on the Windows side that is redirected to $rdp_port, and will always be 3389.
+# Comment this line out to prevent the VM from connecting to the Internet. (untested)
+[config.network_flags]
+network_flags = "(-netdev user,id=nic,hostfwd=tcp:127.0.0.1:${rdp_port}-:3389 -device virtio-net-pci,netdev=nic)"
+
+# To add flags to QEMU, nothing is stopping you from hijacking network_flags with whatever QEMU flags you want.
+
+[bvm]
+# General settings for BVM Go (these don't apply to separate VM directories)
+
+[bvm.general]
+# Uncomment to disable BVM updates. Useful if you have changed the script and do not want your changes overwritten
+#disable_updates = true
+
+# Disable the splash screen (aka BVM logo)
+[bvm.splash]
+#splash = false
+
+# Thanks for reading! - pi-apps-go developers
+# I am always here if you need anything. Consider supporting my work. https://github.com/sponsors/matu6968
